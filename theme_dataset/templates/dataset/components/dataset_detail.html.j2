@@ -1,0 +1,33 @@
+{#- The DatasetDetail CMS widget — DatasetDetail.vue. "Get Dataset" is a GET form to
+    /checkout?source=dataset&dataset_slug=<slug> (router.push in the SPA; works without JS). -#}
+{%- from "cms/macros/tags_custom_fields.html.j2" import tag_chips, custom_fields_display -%}
+{%- set detail = component_context -%}
+<div class="dataset-detail">
+  {%- if detail.state == 'not_found' %}
+  <div class="dataset-error">{{ _(detail.not_found_key) }}</div>
+  {%- else %}
+  {%- set dataset = detail.dataset %}
+  <div class="dataset-detail-header">
+    <div class="dataset-detail-meta">
+      <h1 class="dataset-detail-name">{{ dataset.title }}</h1>
+      {%- if dataset.source_attribution %}
+      <p class="dataset-detail-source">{{ _('dataset.by') }} {{ dataset.source_attribution }}</p>
+      {%- endif %}
+    </div>
+    <div class="dataset-detail-cta">
+      <form method="get" action="/checkout">
+        {%- for field_name, field_value in detail.checkout_fields.items() %}
+        <input type="hidden" name="{{ field_name }}" value="{{ field_value }}">
+        {%- endfor %}
+        <button type="submit" class="dataset-cta-btn" data-testid="dataset-get-btn">{{ _('dataset.getDataset') }}</button>
+      </form>
+    </div>
+  </div>
+  {%- if dataset.description %}
+  <p class="dataset-detail-description">{{ dataset.description }}</p>
+  {%- endif %}
+  {%- if detail.tags_custom_fields %}
+  <div class="dataset-tags-custom-fields" data-testid="dataset-tags-custom-fields">{{ tag_chips(detail.tags_custom_fields.tags) }}{{ custom_fields_display(detail.tags_custom_fields.custom_fields) }}</div>
+  {%- endif %}
+  {%- endif %}
+</div>

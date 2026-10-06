@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vbwd-plugin-theme-dataset"
+version = "1.0.0"
+description = "VBWD backend plugin: theme_dataset"
+requires-python = ">=3.11"
+license = { text = "BSL-1.1" }
+dependencies = []
+
+# Runtime lives inside the vbwd-backend host, which provides `vbwd.*` (core) and
+# any sibling plugins declared in PluginMetadata.dependencies. Those are NOT pinned
+# here so the wheel stays host-agnostic; install the host separately.
+
+[tool.setuptools]
+# The repo root IS the plugins/theme_dataset/ directory; remap it so the wheel exposes
+# the `plugins.theme_dataset` package that runtime imports.
+package-dir = { "plugins.theme_dataset" = "." }
+packages = [
+    "plugins.theme_dataset",
+    "plugins.theme_dataset.theme_dataset",
+]
+
+[tool.setuptools.package-data]
+"plugins.theme_dataset" = [
+    "*.json",
+    "populate_db.py",
+]

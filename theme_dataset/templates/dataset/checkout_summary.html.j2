@@ -1,0 +1,7 @@
+{#- DatasetCheckoutSummary.vue — the dataset source's order summary. -#}
+{%- from "checkout/_price_display.html.j2" import price_display -%}
+<div class="dataset-checkout-summary" data-testid="dataset-checkout-summary">
+  {%- for line in summary.lines %}
+  <div class="plan-row" data-testid="dataset-line-item-{{ line.id }}"><span>{{ line.name }}</span><span>{{ price_display(line.price) }}</span></div>
+  {%- endfor %}
+</div>

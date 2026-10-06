@@ -1,0 +1,21 @@
+{#- The dataset list body (DatasetCatalogue.vue list mode); also the list fragment.
+    Expects: list, category_slug, query. -#}
+{%- if list.state == 'error' -%}
+<div class="dataset-error">{{ list.error }}</div>
+{%- elif list.state == 'empty' -%}
+<div class="dataset-empty">{{ _('dataset.noDatasets') }}</div>
+{%- else -%}
+<div class="dataset-grid">
+  {%- for dataset in list.datasets %}
+  <a href="{{ dataset.href }}" class="dataset-card" data-testid="dataset-card"><div class="dataset-card-info"><span class="dataset-card-name">{{ dataset.title }}</span>{% if dataset.source_attribution %}<span class="dataset-card-source">{{ _('dataset.by') }} {{ dataset.source_attribution }}</span>{% endif %}</div></a>
+  {%- endfor %}
+</div>
+{%- endif -%}
+{%- set pager = list.pagination if list.state != 'error' else none -%}
+{%- if pager %}
+<div class="dataset-pagination">
+  <button type="button"{% if not pager.previous %} disabled{% else %} hx-get="/_render/_fragment/dataset/list" hx-vals='{{ {"category_slug": category_slug, "q": query, "page": pager.previous}|tojson }}' hx-target="#dataset-list-body"{% endif %}>&larr;</button>
+  <span>{{ pager.current }} / {{ pager.total }}</span>
+  <button type="button"{% if not pager.next %} disabled{% else %} hx-get="/_render/_fragment/dataset/list" hx-vals='{{ {"category_slug": category_slug, "q": query, "page": pager.next}|tojson }}' hx-target="#dataset-list-body"{% endif %}>&rarr;</button>
+</div>
+{%- endif -%}

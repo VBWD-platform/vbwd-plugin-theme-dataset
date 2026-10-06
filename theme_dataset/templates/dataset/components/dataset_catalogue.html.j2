@@ -1,0 +1,26 @@
+{#- The DatasetCatalogue CMS widget — DatasetCatalogue.vue (index or category list). -#}
+{%- set catalogue = component_context -%}
+{%- if catalogue.mode == 'list' -%}
+<div class="dataset-catalogue" data-testid="dataset-catalogue-list">
+  <div class="dataset-list-header">
+    <h1 class="dataset-list-title">{{ catalogue.category_label }}</h1>
+    <div class="dataset-list-controls">
+      <input class="dataset-search-input" type="text" name="q" value="{{ catalogue.query }}" placeholder="{{ _('dataset.search') }}" data-testid="dataset-search" hx-get="/_render/_fragment/dataset/list" hx-trigger="input changed" hx-target="#dataset-list-body" hx-vals='{{ {"category_slug": catalogue.category_slug}|tojson }}'>
+    </div>
+  </div>
+  <div id="dataset-list-body">
+    {%- with list = catalogue.list, category_slug = catalogue.category_slug, query = catalogue.query %}
+    {% include "dataset/_list.html.j2" %}
+    {%- endwith %}
+  </div>
+</div>
+{%- else -%}
+<div class="dataset-category-index" data-testid="dataset-catalogue-index">
+  <h1 class="dataset-category-index__title">{{ _('dataset.title') }}</h1>
+  <div class="dataset-category-grid">
+    {%- for category in catalogue.categories %}
+    <a href="/data-store/{{ category.slug }}" class="dataset-category-card"><h2 class="dataset-category-card__title">{{ category.label }}</h2></a>
+    {%- endfor %}
+  </div>
+</div>
+{%- endif -%}
